@@ -1,11 +1,12 @@
 package com.nhnent.study.springcore;
 
+import com.nhnent.study.springcore.config.ApplicationContextConfiguration;
 import com.nhnent.study.springcore.dao.MemberDao;
 import com.nhnent.study.springcore.vo.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Date;
 
@@ -14,7 +15,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContextConfiguration.class);
 
         MemberDao memberDao = context.getBean(MemberDao.class);
 
