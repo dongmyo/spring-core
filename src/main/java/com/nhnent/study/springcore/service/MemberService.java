@@ -1,6 +1,6 @@
 package com.nhnent.study.springcore.service;
 
-import com.nhnent.study.springcore.dao.MemberDao;
+import com.nhnent.study.springcore.repository.MemberRepository;
 import com.nhnent.study.springcore.vo.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ public class MemberService {
 
 
     @Autowired
-    MemberDao memberDao;
+    MemberRepository memberRepository;
 
     @Autowired
     PlatformTransactionManager transactionManager;
@@ -33,7 +33,7 @@ public class MemberService {
         member.setModifiedDate(new Date());
 
         try {
-            memberDao.insert(member);
+            memberRepository.save(member);
         }
         catch (Exception e) {
             LOGGER.error("{}", e);
@@ -43,12 +43,12 @@ public class MemberService {
     }
 
     public Member getMember(String email, String password) throws Exception {
-        Member member = memberDao.exist(email, password);
+        Member member = memberRepository.findByEmailAndPassword(email, password);
         if (member == null) {
             return null;
         }
 
-        return memberDao.selectOne(member.getNo());
+        return memberRepository.findOne(member.getNo());
     }
 
     public void exchangeMemberName(Member member1, Member member2) throws Exception {
@@ -62,8 +62,8 @@ public class MemberService {
 //            member1.setName("dongmyo1");
 //            member2.setName("dongmyo2");
 
-            memberDao.update(member1);
-            memberDao.update(member2);
+            memberRepository.save(member1);
+            memberRepository.save(member2);
 
             this.transactionManager.commit(status);
         }

@@ -1,13 +1,30 @@
 package com.nhnent.study.springcore.vo;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "MEMBERS")
 public class Member {
-    protected int 		no;
+    @Id
+    @Column(name = "MNO")
+    protected Integer	no;
+
+    @Column(name = "MNAME")
     protected String 	name;
+
+    @Column(name = "EMAIL")
     protected String 	email;
+
+    @Column(name = "PWD")
     protected String 	password;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "CRE_DATE")
     protected Date		createdDate;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "MOD_DATE")
     protected Date		modifiedDate;
 
 
