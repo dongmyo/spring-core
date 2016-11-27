@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Date;
 
@@ -16,6 +19,9 @@ public class MemberService {
 
     @Autowired
     MemberDao memberDao;
+
+    @Autowired
+    PlatformTransactionManager transactionManager;
 
 
     public Member createMember(String email, String password, String name) {
@@ -46,15 +52,25 @@ public class MemberService {
     }
 
     public void exchangeMemberName(Member member1, Member member2) throws Exception {
-        String tempName = member1.getName();
-        member1.setName(member2.getName());
-        member2.setName(tempName);
+        TransactionStatus status = this.transactionManager.getTransaction(new DefaultTransactionDefinition());
 
-//        member1.setName("dongmyo1");
-//        member2.setName("dongmyo2");
+        try {
+            String tempName = member1.getName();
+            member1.setName(member2.getName());
+            member2.setName(tempName);
 
-        memberDao.update(member1);
-        memberDao.update(member2);
+//            member1.setName("dongmyo1");
+//            member2.setName("dongmyo2");
+
+            memberDao.update(member1);
+            memberDao.update(member2);
+
+            this.transactionManager.commit(status);
+        }
+        catch (RuntimeException e) {
+            this.transactionManager.rollback(status);
+            throw e;
+        }
     }
 
 }
