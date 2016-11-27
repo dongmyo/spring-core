@@ -59,4 +59,11 @@ public class Member {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "Member{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

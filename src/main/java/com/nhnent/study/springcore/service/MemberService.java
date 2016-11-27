@@ -36,8 +36,25 @@ public class MemberService {
         return member;
     }
 
-    public Member getMember(String email, String password) {
-        return memberDao.exist(email, password);
+    public Member getMember(String email, String password) throws Exception {
+        Member member = memberDao.exist(email, password);
+        if (member == null) {
+            return null;
+        }
+
+        return memberDao.selectOne(member.getNo());
+    }
+
+    public void exchangeMemberName(Member member1, Member member2) throws Exception {
+        String tempName = member1.getName();
+        member1.setName(member2.getName());
+        member2.setName(tempName);
+
+//        member1.setName("dongmyo1");
+//        member2.setName("dongmyo2");
+
+        memberDao.update(member1);
+        memberDao.update(member2);
     }
 
 }

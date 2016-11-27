@@ -37,6 +37,11 @@ public class MemberDao {
     }
 
     public int update(Member member) throws Exception {
+        // TODO: exception이 발생하면?
+//        if (Objects.equals(member.getEmail(), "dongmyo2@nhnent.com")) {
+//            throw new RuntimeException("exception occurred");
+//        }
+
         return sqlSessionTemplate.update(NAMESPACE + "updateMember", member);
     }
 
