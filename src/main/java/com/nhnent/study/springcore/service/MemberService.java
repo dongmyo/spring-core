@@ -62,8 +62,8 @@ public class MemberService {
 //            member1.setName("dongmyo1");
 //            member2.setName("dongmyo2");
 
-            memberRepository.save(member1);
-            memberRepository.save(member2);
+            memberRepository.update(member1);
+            memberRepository.update(member2);
 
             this.transactionManager.commit(status);
         }
