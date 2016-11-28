@@ -82,7 +82,7 @@ public class ApplicationContextConfiguration {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 
         if (Objects.equals(dbms, "h2")) {
-            vendorAdapter.setDatabase(Database.DB2);
+            vendorAdapter.setDatabase(Database.H2);
         }
         else if (Objects.equals(dbms, "mysql")) {
             vendorAdapter.setDatabase(Database.MYSQL);

@@ -8,6 +8,7 @@ import java.util.Date;
 public class Member {
     @Id
     @Column(name = "MNO")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer	no;
 
     @Column(name = "MNAME")
@@ -28,10 +29,10 @@ public class Member {
     protected Date		modifiedDate;
 
 
-    public int getNo() {
+    public Integer getNo() {
         return no;
     }
-    public Member setNo(int no) {
+    public Member setNo(Integer no) {
         this.no = no;
         return this;
     }
