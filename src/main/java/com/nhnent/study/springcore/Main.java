@@ -29,6 +29,10 @@ public class Main {
         System.out.println(member2);
 
         memberService.exchangeMemberName(member1, member2);
+
+        // TODO
+//        memberService.createMember("dongmyo3@nhnent.com", "abcde", "dongmyo3");
+//        memberService.createMember("dongmyo4@nhnent.com", "fghij", "dongmyo4");
     }
 
     private static Member getOrCreateMember(MemberService memberService, Member member) throws Exception {

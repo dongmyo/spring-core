@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.io.Resource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -28,6 +29,7 @@ import java.util.Properties;
 @ComponentScan(basePackages = "com.nhnent.study.springcore")
 @EnableJpaRepositories(basePackages = "com.nhnent.study.springcore.repository")
 @EnableTransactionManagement
+@EnableAspectJAutoProxy
 public class ApplicationContextConfiguration {
     private static final Map<String, String> JDBC_PROPERTY_LOCATION_MAP = new HashMap<>();
 

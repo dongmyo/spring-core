@@ -29,7 +29,7 @@ public class MemberServiceImpl implements MemberService {
         member.setModifiedDate(new Date());
 
         try {
-            memberRepository.save(member);
+            member = memberRepository.save(member);
         }
         catch (Exception e) {
             LOGGER.error("{}", e);
