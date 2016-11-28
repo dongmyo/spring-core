@@ -1,12 +1,6 @@
 package com.nhnent.study.springcore.config;
 
-import com.nhnent.study.springcore.helper.TransactionAdvice;
-import org.aopalliance.aop.Advice;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.aop.Pointcut;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ApplicationContext;
@@ -21,6 +15,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -32,6 +27,7 @@ import java.util.Properties;
 @Configuration
 @ComponentScan(basePackages = "com.nhnent.study.springcore")
 @EnableJpaRepositories(basePackages = "com.nhnent.study.springcore.repository")
+@EnableTransactionManagement
 public class ApplicationContextConfiguration {
     private static final Map<String, String> JDBC_PROPERTY_LOCATION_MAP = new HashMap<>();
 
@@ -114,33 +110,6 @@ public class ApplicationContextConfiguration {
         properties.setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
 
         return properties;
-    }
-
-    @Bean
-    public Pointcut transactionPointcut() {
-        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression("execution(* *..*ServiceImpl.exchange*(..))");
-        return pointcut;
-    }
-
-    @Bean
-    public TransactionAdvice transactionAdvice(PlatformTransactionManager transactionManager) {
-        TransactionAdvice advice = new TransactionAdvice();
-        advice.setTransactionManager(transactionManager);
-        return advice;
-    }
-
-    @Bean
-    public DefaultPointcutAdvisor transactionAdvisor(Pointcut transactionPointcut, Advice transactionAdvice) {
-        DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor();
-        advisor.setPointcut(transactionPointcut);
-        advisor.setAdvice(transactionAdvice);
-        return advisor;
-    }
-
-    @Bean
-    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-        return new DefaultAdvisorAutoProxyCreator();
     }
 
 }

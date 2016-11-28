@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -47,6 +48,7 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findOne(member.getNo());
     }
 
+    @Transactional
     @Override
     public void exchangeMemberName(Member member1, Member member2) throws Exception {
         String tempName = member1.getName();
