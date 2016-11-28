@@ -1,5 +1,8 @@
 package com.nhnent.study.springcore.config;
 
+import com.nhnent.study.springcore.helper.TxProjectFactoryBean;
+import com.nhnent.study.springcore.service.MemberService;
+import com.nhnent.study.springcore.service.MemberServiceImpl;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -108,6 +111,25 @@ public class ApplicationContextConfiguration {
         properties.setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
 
         return properties;
+    }
+
+    @Bean(name = "memberService")
+    public MemberService memberService(MemberServiceImpl memberServiceImpl, PlatformTransactionManager transactionManager) {
+        MemberService memberService = null;
+
+        TxProjectFactoryBean factoryBean = new TxProjectFactoryBean();
+        factoryBean.setTarget(memberServiceImpl);
+        factoryBean.setTransactionManager(transactionManager);
+        factoryBean.setPattern("exchange");
+        factoryBean.setServiceInterface(MemberService.class);
+
+        try {
+            memberService = (MemberService) factoryBean.getObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return memberService;
     }
 
 }
