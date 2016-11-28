@@ -1,9 +1,15 @@
 package com.nhnent.study.springcore.config;
 
-import com.nhnent.study.springcore.helper.TxProjectFactoryBean;
+import com.nhnent.study.springcore.helper.TransactionAdvice;
 import com.nhnent.study.springcore.service.MemberService;
 import com.nhnent.study.springcore.service.MemberServiceImpl;
+import org.aopalliance.aop.Advice;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.aop.Pointcut;
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ApplicationContext;
@@ -113,15 +119,36 @@ public class ApplicationContextConfiguration {
         return properties;
     }
 
+    @Bean
+    public Pointcut transactionPointcut() {
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedName("exchange*");
+        return pointcut;
+    }
+
+    @Bean
+    public TransactionAdvice transactionAdvice(PlatformTransactionManager transactionManager) {
+        TransactionAdvice advice = new TransactionAdvice();
+        advice.setTransactionManager(transactionManager);
+        return advice;
+    }
+
+    @Bean
+    public DefaultPointcutAdvisor transactionAdvisor(Pointcut transactionPointcut, Advice transactionAdvice) {
+        DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor();
+        advisor.setPointcut(transactionPointcut);
+        advisor.setAdvice(transactionAdvice);
+        return advisor;
+    }
+
     @Bean(name = "memberService")
-    public MemberService memberService(MemberServiceImpl memberServiceImpl, PlatformTransactionManager transactionManager) {
+    public MemberService memberService(BeanFactory beanFactory, MemberServiceImpl memberServiceImpl) {
         MemberService memberService = null;
 
-        TxProjectFactoryBean factoryBean = new TxProjectFactoryBean();
+        ProxyFactoryBean factoryBean = new ProxyFactoryBean();
+        factoryBean.setBeanFactory(beanFactory);
         factoryBean.setTarget(memberServiceImpl);
-        factoryBean.setTransactionManager(transactionManager);
-        factoryBean.setPattern("exchange");
-        factoryBean.setServiceInterface(MemberService.class);
+        factoryBean.setInterceptorNames("transactionAdvisor");
 
         try {
             memberService = (MemberService) factoryBean.getObject();
