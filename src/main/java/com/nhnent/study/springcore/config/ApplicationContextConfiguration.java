@@ -1,15 +1,12 @@
 package com.nhnent.study.springcore.config;
 
 import com.nhnent.study.springcore.helper.TransactionAdvice;
-import com.nhnent.study.springcore.service.MemberService;
-import com.nhnent.study.springcore.service.MemberServiceImpl;
 import org.aopalliance.aop.Advice;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.aop.Pointcut;
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.aop.support.NameMatchMethodPointcut;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ApplicationContext;
@@ -121,8 +118,8 @@ public class ApplicationContextConfiguration {
 
     @Bean
     public Pointcut transactionPointcut() {
-        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
-        pointcut.setMappedName("exchange*");
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        pointcut.setExpression("execution(* *..*ServiceImpl.exchange*(..))");
         return pointcut;
     }
 
@@ -141,22 +138,9 @@ public class ApplicationContextConfiguration {
         return advisor;
     }
 
-    @Bean(name = "memberService")
-    public MemberService memberService(BeanFactory beanFactory, MemberServiceImpl memberServiceImpl) {
-        MemberService memberService = null;
-
-        ProxyFactoryBean factoryBean = new ProxyFactoryBean();
-        factoryBean.setBeanFactory(beanFactory);
-        factoryBean.setTarget(memberServiceImpl);
-        factoryBean.setInterceptorNames("transactionAdvisor");
-
-        try {
-            memberService = (MemberService) factoryBean.getObject();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return memberService;
+    @Bean
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+        return new DefaultAdvisorAutoProxyCreator();
     }
 
 }

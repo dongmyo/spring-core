@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
-@Service
+@Service("memberService")
 public class MemberServiceImpl implements MemberService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MemberServiceImpl.class);
 
